@@ -1,104 +1,111 @@
-# Ex6 Dequeue Elements from Circular Queue
-## DATE:14.05.25
+# Ex7 Priority Queue
+## DATE:26.2.25
 ## AIM:
-To write a C program to delete three elements from the filled circular queue.
+To formulate the C code to display the elements of the priority queue after insertion and deletion operation.
 
 ## Algorithm
-1.Initialize front and rear to -1.
+1.Initialize an empty priority queue with size = 0.
 
-2.Fill the queue using circular enqueue logic.
+2.Insert a new element in sorted order (descending), shifting elements if needed.
 
-3.Check if the queue is empty before deletion.
+3.Delete the highest priority element (first element) and shift the rest left.
 
-4.Delete three elements using circular dequeue.
+4.Display all elements from index 0 to size - 1.
 
-5.Display the queue from front to rear.   
+5.Repeat the operations based on user choice until exit is selected.
 
 ## Program:
 ```
 /*
-Program to delete three elements from the filled circular queue
+Program to o display the elements of the priority queue after insertion and deletion operation
 Developed by: Abdullah R
 RegisterNumber:  212223230004
 */
 #include <stdio.h>
-#define SIZE 5
+#include <stdlib.h>
 
-int queue[SIZE];
-int front = -1, rear = -1;
+#define MAX 100
 
-void enqueue(int value) {
-    if ((front == 0 && rear == SIZE - 1) || (rear == (front - 1 + SIZE) % SIZE)) {
-        printf("Queue is Full\n");
-        return;
-    } else if (front == -1) {
-        front = rear = 0;
-    } else {
-        rear = (rear + 1) % SIZE;
-    }
-    queue[rear] = value;
-}
+typedef struct {
+    int items[MAX];
+    int size;
+} PriorityQueue;
 
-int dequeue() {
-    if (front == -1) {
-        printf("Queue is Empty\n");
-        return -1;
-    }
-
-    int data = queue[front];
-    if (front == rear) {
-        front = rear = -1;  
-    } else {
-        front = (front + 1) % SIZE;
-    }
-
-    return data;
-}
-
-void displayQueue() {
-    if (front == -1) {
-        printf("Queue is Empty\n");
+void insert(PriorityQueue *pq, int value) {
+    if (pq->size == MAX) {
+        printf("Priority Queue is full!\n");
         return;
     }
+    int i = pq->size - 1;
+    while (i >= 0 && pq->items[i] < value) {
+        pq->items[i + 1] = pq->items[i];
+        i--;
+    }
+    pq->items[i + 1] = value;
+    pq->size++;
+}
 
-    printf("Queue: ");
-    int i = front;
-    while (1) {
-        printf("%d ", queue[i]);
-        if (i == rear) break;
-        i = (i + 1) % SIZE;
+void delete(PriorityQueue *pq) {
+    if (pq->size == 0) {
+        printf("Priority Queue is empty!\n");
+        return;
+    }
+    printf("Deleted element: %d\n", pq->items[0]);
+    for (int i = 1; i < pq->size; i++) {
+        pq->items[i - 1] = pq->items[i];
+    }
+    pq->size--;
+}
+
+void display(PriorityQueue *pq) {
+    if (pq->size == 0) {
+        printf("Priority Queue is empty!\n");
+        return;
+    }
+    printf("Priority Queue elements: ");
+    for (int i = 0; i < pq->size; i++) {
+        printf("%d ", pq->items[i]);
     }
     printf("\n");
 }
 
 int main() {
-    enqueue(10);
-    enqueue(20);
-    enqueue(30);
-    enqueue(40);
-    enqueue(50);
-    printf("Initial ");
-    displayQueue();
+    PriorityQueue pq;
+    pq.size = 0;
+    int choice, value;
 
-    printf("\nDeleting 3 elements:\n");
-    for (int i = 0; i < 3; i++) {
-        int removed = dequeue();
-        if (removed != -1) {
-            printf("Deleted: %d\n", removed);
+    while (1) {
+        printf("\n1. Insert\n2. Delete\n3. Display\n4. Exit\nEnter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter value to insert: ");
+                scanf("%d", &value);
+                insert(&pq, value);
+                display(&pq);
+                break;
+            case 2:
+                delete(&pq);
+                display(&pq);
+                break;
+            case 3:
+                display(&pq);
+                break;
+            case 4:
+                exit(0);
+            default:
+                printf("Invalid choice! Try again.\n");
         }
     }
-
-    printf("\nAfter Deletion ");
-    displayQueue();
-
     return 0;
 }
 ```
 
 ## Output:
-![image](https://github.com/user-attachments/assets/87b69b67-24af-42af-8d6e-2c04eacf1804)
+![image](https://github.com/user-attachments/assets/6843d7ea-08a6-4d4f-bef8-d209165d61c1)
 
 
 
 ## Result:
-Thus, the C program to delete three elements from the filled circular queue is implemented successfully.
+Thus, the C program to display the elements of the priority queue after insertion and deletion operation is implemented successfully
